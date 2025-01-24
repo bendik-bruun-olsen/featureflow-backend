@@ -1,4 +1,7 @@
-import { userSchema } from "../schema/userSchema.mjs";
+import {
+	userSchema,
+	featureRequestCreateSchema,
+} from "../schema/userSchema.mjs";
 
 const validateData = (schema) => (req, res, next) => {
 	const { error } = schema.validate(req.body, { abortEarly: false });
@@ -12,5 +15,8 @@ const validateData = (schema) => (req, res, next) => {
 };
 
 const validateUserData = validateData(userSchema);
+const validateFeatureRequestCreateData = validateData(
+	featureRequestCreateSchema
+);
 
-export { validateUserData };
+export { validateUserData, validateFeatureRequestCreateData };
