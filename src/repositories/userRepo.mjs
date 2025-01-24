@@ -1,4 +1,4 @@
-import mssql from "mssql";
+import { NVarChar, Int } from "mssql";
 import getPool from "../database/config.mjs";
 
 const getAllUsers = async () => {
@@ -14,7 +14,7 @@ const getUserById = async (userId) => {
 	const pool = await getPool();
 	const result = await pool
 		.request()
-		.input("userId", mssql.Int, userId)
+		.input("userId", Int, userId)
 		.query(
 			"SELECT userId, firstName, lastName, email FROM Users WHERE userId = @userId"
 		);
@@ -26,7 +26,7 @@ const getUserByEmail = async (email) => {
 	const pool = await getPool();
 	const result = await pool
 		.request()
-		.input("email", mssql.NVarChar, email)
+		.input("email", NVarChar, email)
 		.query("SELECT * FROM Users WHERE LOWER(email) = LOWER(@email)");
 
 	return result.recordset[0];
@@ -36,9 +36,9 @@ const createUser = async ({ username, email, password }) => {
 	const pool = await getPool();
 	const result = await pool
 		.request()
-		.input("username", mssql.NVarChar, username)
-		.input("email", mssql.NVarChar, email)
-		.input("password", mssql.NVarChar, password)
+		.input("username", NVarChar, username)
+		.input("email", NVarChar, email)
+		.input("password", NVarChar, password)
 		.query(
 			"INSERT INTO Users (username, email, password) OUTPUT INSERTED.id VALUES (@username, @email, @password)"
 		);
