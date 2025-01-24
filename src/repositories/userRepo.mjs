@@ -40,9 +40,9 @@ const createUser = async ({ username, email, password }) => {
 		.input("email", mssql.NVarChar, email)
 		.input("password", mssql.NVarChar, password)
 		.query(
-			"INSERT INTO Users (firstName, lastName, email, password) OUTPUT INSERTED.userId VALUES (@firstName, @lastName, @email, @password)"
+			"INSERT INTO Users (username, email, password) OUTPUT INSERTED.id VALUES (@username, @email, @password)"
 		);
-	return result.recordset[0].userId;
+	return result.recordset[0].id;
 };
 
 export { getAllUsers, getUserById, getUserByEmail, createUser };

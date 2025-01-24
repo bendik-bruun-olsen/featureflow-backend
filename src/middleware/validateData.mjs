@@ -1,4 +1,4 @@
-import { userSchema } from "../schema/schema.mjs";
+import { userSchema } from "../schema/userSchema.mjs";
 
 const validateData = (schema) => (req, res, next) => {
 	const { error } = schema.validate(req.body, { abortEarly: false });

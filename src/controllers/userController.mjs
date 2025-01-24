@@ -46,10 +46,10 @@ router.post("/", validateUserData, async (req, res) => {
 
 		const hashedPassword = await bcrypt.hash(newUser.password, 10);
 
-		const userId = await createUser({ ...newUser, password: hashedPassword });
+		const id = await createUser({ ...newUser, password: hashedPassword });
 		res
 			.status(201)
-			.json({ message: "User signed up successfully with ID: ", userId });
+			.json({ message: "User signed up successfully with ID: ", id });
 	} catch (err) {
 		console.error(err);
 		res
