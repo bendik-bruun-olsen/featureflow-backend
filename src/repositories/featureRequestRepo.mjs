@@ -18,7 +18,7 @@ const getRequestById = async (id) => {
 	return result.recordset[0];
 };
 
-const createRequest = async (title, createdBy, description) => {
+const createRequest = async ({ title, createdBy, description }) => {
 	const pool = await getPool();
 	const result = await pool
 		.request()
@@ -26,9 +26,9 @@ const createRequest = async (title, createdBy, description) => {
 		.input("createdBy", mssql.Int, createdBy)
 		.input("description", mssql.NVarChar, description)
 		.query(
-			"INSERT INTO FeatureRequests (title, createdBy, description) OUTPUT.* VALUES (@title, @createdBy, @description)"
+			"INSERT INTO FeatureRequests (title, createdBy, description) OUTPUT INSERTED.* VALUES (@title, @createdBy, @description)"
 		);
-	return result.recordset[0].id;
+	return result.recordset[0];
 };
 
 export { getAllRequests, getRequestById, createRequest };
