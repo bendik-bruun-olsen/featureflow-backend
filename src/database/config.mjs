@@ -3,7 +3,7 @@ import sql from "mssql";
 const config = {
 	user: "bendik",
 	password: "12345",
-	database: "fakeStore",
+	database: "FeatureFlow",
 	server: "DESKTOP-96H53G4",
 	options: {
 		trustServerCertificate: true,
