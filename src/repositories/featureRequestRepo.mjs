@@ -18,14 +18,15 @@ const getRequestById = async (id) => {
 	return result.recordset[0];
 };
 
-const createRequest = async (title, createdBy) => {
+const createRequest = async (title, createdBy, description) => {
 	const pool = await getPool();
 	const result = await pool
 		.request()
 		.input("title", NVarChar, title)
 		.input("createdBy", Int, createdBy)
+		.input("description", NVarChar, description)
 		.query(
-			"INSERT INTO FeatureRequests (title, createdBy) OUTPUT.* VALUES (@title, @createdBy)"
+			"INSERT INTO FeatureRequests (title, createdBy, description) OUTPUT.* VALUES (@title, @createdBy, @description)"
 		);
 	return result.recordset[0].id;
 };
