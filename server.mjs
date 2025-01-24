@@ -17,3 +17,7 @@ app.listen(port, () => {
 app.get("/", (req, res) => {
 	res.send("API is working!");
 });
+
+app.all("*", (req, res) => {
+	res.status(404);
+});

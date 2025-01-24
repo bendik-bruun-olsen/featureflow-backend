@@ -32,12 +32,11 @@ const getUserByEmail = async (email) => {
 	return result.recordset[0];
 };
 
-const createUser = async ({ firstName, lastName, email, password }) => {
+const createUser = async ({ username, email, password }) => {
 	const pool = await getPool();
 	const result = await pool
 		.request()
-		.input("firstName", mssql.NVarChar, firstName)
-		.input("lastName", mssql.NVarChar, lastName)
+		.input("username", mssql.NVarChar, username)
 		.input("email", mssql.NVarChar, email)
 		.input("password", mssql.NVarChar, password)
 		.query(
