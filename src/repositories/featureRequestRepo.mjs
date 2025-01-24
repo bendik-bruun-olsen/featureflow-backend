@@ -25,7 +25,9 @@ const createRequest = async (title, createdBy) => {
 		.input("title", NVarChar, title)
 		.input("createdBy", Int, createdBy)
 		.query(
-			"INSERT INTO FeatureRequests (title, createdBy) OUTPUT.id VALUES (@title, @createdBy)"
+			"INSERT INTO FeatureRequests (title, createdBy) OUTPUT.* VALUES (@title, @createdBy)"
 		);
 	return result.recordset[0].id;
 };
+
+export { getAllRequests, getRequestById, createRequest };
