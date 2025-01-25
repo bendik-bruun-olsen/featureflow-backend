@@ -32,6 +32,16 @@ const getUserByEmail = async (email) => {
 	return result.recordset[0];
 };
 
+const getUserByUserName = async (username) => {
+	const pool = await getPool();
+	const result = await pool
+		.request()
+		.input("username", mssql.NVarChar, username)
+		.query("SELECT * FROM Users WHERE LOWER(username) = LOWER(@username)");
+
+	return result.recordset[0];
+};
+
 const createUser = async ({ username, email, password }) => {
 	const pool = await getPool();
 	const result = await pool
@@ -45,4 +55,10 @@ const createUser = async ({ username, email, password }) => {
 	return result.recordset[0].id;
 };
 
-export { getAllUsers, getUserById, getUserByEmail, createUser };
+export {
+	getAllUsers,
+	getUserById,
+	getUserByEmail,
+	createUser,
+	getUserByUserName,
+};

@@ -5,8 +5,9 @@ import {
 	getAllUsers,
 	getUserByEmail,
 	getUserById,
+	getUserByUserName,
 } from "../repositories/userRepo.mjs";
-import { validateUserData } from "../middleware/validateData.mjs";
+import { validateUserCreateData } from "../middleware/validateData.mjs";
 
 const router = express.Router();
 
@@ -35,13 +36,17 @@ const router = express.Router();
 // 	}
 // });
 
-router.post("/", validateUserData, async (req, res) => {
+router.post("/create", validateUserCreateData, async (req, res) => {
 	const newUser = req.body;
 
 	try {
-		const existingUser = await getUserByEmail(newUser.email);
-		if (existingUser) {
+		const existingEmail = await getUserByEmail(newUser.email);
+		if (existingEmail) {
 			return res.status(400).send({ message: "Email is already in use." });
+		}
+		const existingUsername = await getUserByUserName(newUser.username);
+		if (existingUsername) {
+			return res.status(400).send({ message: "Username is already taken." });
 		}
 
 		const hashedPassword = await bcrypt.hash(newUser.password, 10);
@@ -57,6 +62,8 @@ router.post("/", validateUserData, async (req, res) => {
 			.send({ message: "Error signing up user.", error: err.message });
 	}
 });
+
+// router.post("/login", validateUserCreateData);
 
 router.all("/", (req, res) => {
 	res.status(405).send({ message: `${req.method} not allowed on /users` });
