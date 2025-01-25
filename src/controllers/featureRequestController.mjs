@@ -5,10 +5,11 @@ import {
 	createRequest,
 } from "../repositories/featureRequestRepo.mjs";
 import { validateFeatureRequestCreateData } from "../middleware/validateData.mjs";
+import jwtValidator from "../middleware/jwtValidator.mjs";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", jwtValidator, async (req, res) => {
 	try {
 		const result = await getAllRequests();
 		res.status(200).json(result);
@@ -20,7 +21,7 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", jwtValidator, async (req, res) => {
 	try {
 		const { id } = req.params;
 		const result = await getRequestById(id);
@@ -33,17 +34,25 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-router.post("/create", validateFeatureRequestCreateData, async (req, res) => {
-	const newRequest = req.body;
-	try {
-		const result = await createRequest(newRequest);
-		res.status(201).json(result);
-	} catch (err) {
-		console.error(err);
-		res
-			.status(500)
-			.send({ message: "Error creating featureRequest", error: err.message });
+router.post(
+	"/create",
+	jwtValidator,
+	validateFeatureRequestCreateData,
+	async (req, res) => {
+		const newRequest = req.body;
+		try {
+			const result = await createRequest({
+				...newRequest,
+				createdBy: req.userId,
+			});
+			res.status(201).json(result);
+		} catch (err) {
+			console.error(err);
+			res
+				.status(500)
+				.send({ message: "Error creating featureRequest", error: err.message });
+		}
 	}
-});
+);
 
 export default router;

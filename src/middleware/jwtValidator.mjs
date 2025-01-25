@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 
 const jwtValidator = (req, res, next) => {
+	console.log("Validating incomming request");
+
 	const token = req.headers.authorization?.split(" ")[1];
 
 	if (!token) {

@@ -76,12 +76,12 @@ router.post("/login", validateUserLoginData, async (req, res) => {
 	try {
 		const user = await getUserByEmail(email);
 		if (!user) {
-			res.status(401).send({ message: "Invalid login credentials." });
+			return res.status(401).send({ message: "Invalid login credentials." });
 		}
 
 		const correctPassword = await bcrypt.compare(password, user.password);
 		if (!correctPassword) {
-			res.status(401).send({ message: "Invalid login credentials." });
+			return res.status(401).send({ message: "Invalid login credentials." });
 		}
 
 		const payLoad = { userId: user.id, user: email };
