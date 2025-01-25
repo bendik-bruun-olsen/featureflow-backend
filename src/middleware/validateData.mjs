@@ -1,4 +1,4 @@
-import { userCreateSchema } from "../schema/userSchema.mjs";
+import { userCreateSchema, userLoginSchema } from "../schema/userSchema.mjs";
 import { featureRequestCreateSchema } from "../schema/featureRequestSchema.mjs";
 
 const validateData = (schema) => (req, res, next) => {
@@ -13,8 +13,13 @@ const validateData = (schema) => (req, res, next) => {
 };
 
 const validateUserCreateData = validateData(userCreateSchema);
+const validateUserLoginData = validateData(userLoginSchema);
 const validateFeatureRequestCreateData = validateData(
 	featureRequestCreateSchema
 );
 
-export { validateUserCreateData, validateFeatureRequestCreateData };
+export {
+	validateUserCreateData,
+	validateFeatureRequestCreateData,
+	validateUserLoginData,
+};

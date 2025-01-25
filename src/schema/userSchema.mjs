@@ -9,4 +9,12 @@ const userCreateSchema = Joi.object({
 	password: Joi.string().min(8).max(255).required(),
 });
 
-export { userCreateSchema };
+const userLoginSchema = Joi.object({
+	email: Joi.string()
+		.email({ tlds: { allow: false } })
+		.max(320)
+		.required(),
+	password: Joi.string().min(8).max(255).required(),
+});
+
+export { userCreateSchema, userLoginSchema };

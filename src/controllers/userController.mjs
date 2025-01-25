@@ -1,5 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import {
 	createUser,
 	getAllUsers,
@@ -7,7 +8,13 @@ import {
 	getUserById,
 	getUserByUserName,
 } from "../repositories/userRepo.mjs";
-import { validateUserCreateData } from "../middleware/validateData.mjs";
+import {
+	validateUserCreateData,
+	validateUserLoginData,
+} from "../middleware/validateData.mjs";
+
+import { config } from "dotenv";
+config();
 
 const router = express.Router();
 
@@ -63,7 +70,32 @@ router.post("/create", validateUserCreateData, async (req, res) => {
 	}
 });
 
-// router.post("/login", validateUserCreateData);
+router.post("/login", validateUserLoginData, async (req, res) => {
+	const { email, password } = req.body;
+
+	try {
+		const user = await getUserByEmail(email);
+		if (!user) {
+			res.status(401).send({ message: "Invalid login credentials." });
+		}
+
+		const correctPassword = await bcrypt.compare(password, user.password);
+		if (!correctPassword) {
+			res.status(401).send({ message: "Invalid login credentials." });
+		}
+
+		const payLoad = { userId: user.id, user: email };
+		const secretKey = process.env.JWT_SECRET;
+		const token = jwt.sign(payLoad, secretKey, { expiresIn: "1h" });
+
+		res.status(200).json({ message: "Authentication successful.", token });
+	} catch (err) {
+		console.error(err);
+		res
+			.status(500)
+			.send({ message: "Error logging user in.", error: err.message });
+	}
+});
 
 router.all("/", (req, res) => {
 	res.status(405).send({ message: `${req.method} not allowed on /users` });

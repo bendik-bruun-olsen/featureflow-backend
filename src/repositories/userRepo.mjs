@@ -19,7 +19,7 @@ const getUserById = async (userId) => {
 			"SELECT userId, firstName, lastName, email FROM Users WHERE userId = @userId"
 		);
 
-	return result.recordset;
+	return result.recordset[0];
 };
 
 const getUserByEmail = async (email) => {
