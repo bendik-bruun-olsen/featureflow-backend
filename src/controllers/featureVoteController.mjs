@@ -6,6 +6,7 @@ import {
 	deleteVote,
 	getVote,
 	updateVote,
+	addVote,
 } from "../repositories/featureVoteRepo.mjs";
 
 const router = express.Router();

@@ -35,7 +35,7 @@ const deleteVote = async (id) => {
 	const pool = await getPool();
 	const result = await pool.request().input("id", mssql.Int, id)
 		.query(`DELETE FROM FeatureVotes 
-			WHERE id = @id`);
+			WHERE FeatureVotes.id = @id`);
 
 	return result.rowsAffected[0] === 1 ? true : false;
 };
@@ -47,7 +47,7 @@ const updateVote = async (id, vote) => {
 		.input("id", mssql.Int, id)
 		.input("vote", mssql.Int, vote).query(`UPDATE FeatureVotes 
 			SET vote = @vote 
-			WHERE id = @id`);
+			WHERE FeatureVotes.id = @id`);
 
 	return result.rowsAffected[0] === 1 ? true : false;
 };

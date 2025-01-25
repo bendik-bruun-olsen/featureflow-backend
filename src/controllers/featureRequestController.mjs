@@ -10,8 +10,9 @@ import jwtValidator from "../middleware/jwtValidator.mjs";
 const router = express.Router();
 
 router.get("/", jwtValidator, async (req, res) => {
+	const { userId } = req;
 	try {
-		const result = await getAllRequests();
+		const result = await getAllRequests(userId);
 		res.status(200).json(result);
 	} catch (err) {
 		console.error(err);
