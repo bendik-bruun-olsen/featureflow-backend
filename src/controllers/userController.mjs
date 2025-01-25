@@ -44,6 +44,8 @@ const router = express.Router();
 // });
 
 router.post("/create", validateUserCreateData, async (req, res) => {
+	console.log("Creating user");
+
 	const newUser = req.body;
 
 	try {

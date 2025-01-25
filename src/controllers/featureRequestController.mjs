@@ -12,6 +12,8 @@ const router = express.Router();
 router.get("/", jwtValidator, async (req, res) => {
 	try {
 		const result = await getAllRequests();
+		console.log("Result:", result);
+
 		res.status(200).json(result);
 	} catch (err) {
 		console.error(err);

@@ -3,7 +3,11 @@ import getPool from "../database/config.mjs";
 
 const getAllRequests = async () => {
 	const pool = await getPool();
-	const result = await pool.request().query("SELECT * FROM FeatureRequests");
+	const result = await pool
+		.request()
+		.query(
+			"SELECT FR.*, U.username AS createdByName FROM FeatureRequests FR JOIN Users U ON FR.createdBy = U.id"
+		);
 
 	return result.recordset;
 };
@@ -13,7 +17,9 @@ const getRequestById = async (id) => {
 	const result = await pool
 		.request()
 		.input("id", mssql.Int, id)
-		.query("SELECT * FROM FeatureRequests WHERE id = @id");
+		.query(
+			"SELECT FR.*, U.username AS createdByName FROM FeatureRequests FR JOIN Users U ON FR.createdBy = U.idWHERE id = @id"
+		);
 
 	return result.recordset[0];
 };
