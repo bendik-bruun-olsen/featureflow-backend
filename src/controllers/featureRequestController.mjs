@@ -12,8 +12,6 @@ const router = express.Router();
 router.get("/", jwtValidator, async (req, res) => {
 	try {
 		const result = await getAllRequests();
-		console.log("Result:", result);
-
 		res.status(200).json(result);
 	} catch (err) {
 		console.error(err);
@@ -56,5 +54,11 @@ router.post(
 		}
 	}
 );
+
+router.all("/", (req, res) => {
+	res
+		.status(405)
+		.send({ message: `${req.method} not allowed on /feature-request` });
+});
 
 export default router;

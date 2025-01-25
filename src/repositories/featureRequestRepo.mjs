@@ -18,7 +18,7 @@ const getRequestById = async (id) => {
 		.request()
 		.input("id", mssql.Int, id)
 		.query(
-			"SELECT FR.*, U.username AS createdByName FROM FeatureRequests FR JOIN Users U ON FR.createdBy = U.idWHERE id = @id"
+			"SELECT FR.*, U.username AS createdByName FROM FeatureRequests FR JOIN Users U ON FR.createdBy = U.id WHERE id = @id"
 		);
 
 	return result.recordset[0];
