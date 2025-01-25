@@ -16,7 +16,9 @@ const getUserById = async (userId) => {
 		.request()
 		.input("userId", mssql.Int, userId)
 		.query(
-			"SELECT userId, firstName, lastName, email FROM Users WHERE userId = @userId"
+			`SELECT userId, firstName, lastName, email 
+			FROM Users 
+			WHERE userId = @userId`
 		);
 
 	return result.recordset[0];
@@ -37,7 +39,7 @@ const getUserByUserName = async (username) => {
 	const result = await pool
 		.request()
 		.input("username", mssql.NVarChar, username)
-		.query("SELECT * FROM Users WHERE LOWER(username) = LOWER(@username)");
+		.query(`SELECT * FROM Users WHERE LOWER(username) = LOWER(@username)`);
 
 	return result.recordset[0];
 };
@@ -50,7 +52,9 @@ const createUser = async ({ username, email, password }) => {
 		.input("email", mssql.NVarChar, email)
 		.input("password", mssql.NVarChar, password)
 		.query(
-			"INSERT INTO Users (username, email, password) OUTPUT INSERTED.id VALUES (@username, @email, @password)"
+			`INSERT INTO Users (username, email, password) 
+			OUTPUT INSERTED.id 
+			VALUES (@username, @email, @password)`
 		);
 	return result.recordset[0].id;
 };

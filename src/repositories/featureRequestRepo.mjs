@@ -3,11 +3,13 @@ import getPool from "../database/config.mjs";
 
 const getAllRequests = async () => {
 	const pool = await getPool();
-	const result = await pool
-		.request()
-		.query(
-			"SELECT FR.*, U.username AS createdByName FROM FeatureRequests FR JOIN Users U ON FR.createdBy = U.id"
-		);
+	const result = await pool.request().query(
+		`SELECT 
+			FR.*, 
+			U.username AS createdByName 
+		FROM FeatureRequests FR 
+		JOIN Users U ON FR.createdBy = U.id`
+	);
 
 	return result.recordset;
 };
@@ -18,7 +20,11 @@ const getRequestById = async (id) => {
 		.request()
 		.input("id", mssql.Int, id)
 		.query(
-			"SELECT FR.*, U.username AS createdByName FROM FeatureRequests FR JOIN Users U ON FR.createdBy = U.id WHERE id = @id"
+			`SELECT 
+				FR.*, U.username AS createdByName 
+			FROM FeatureRequests FR 
+			JOIN Users U ON FR.createdBy = U.id 
+			WHERE id = @id`
 		);
 
 	return result.recordset[0];
@@ -32,7 +38,9 @@ const createRequest = async ({ title, createdBy, description }) => {
 		.input("createdBy", mssql.Int, createdBy)
 		.input("description", mssql.NVarChar, description)
 		.query(
-			"INSERT INTO FeatureRequests (title, createdBy, description) OUTPUT INSERTED.* VALUES (@title, @createdBy, @description)"
+			`INSERT INTO FeatureRequests (title, createdBy, description) 
+			OUTPUT INSERTED.* 
+			VALUES (@title, @createdBy, @description)`
 		);
 	return result.recordset[0];
 };

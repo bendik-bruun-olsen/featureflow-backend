@@ -8,7 +8,9 @@ const getVote = async (featureId, userId) => {
 		.input("featureId", mssql.Int, featureId)
 		.input("userId", mssql.Int, userId)
 		.query(
-			"SELECT * FROM FeatureVotes WHERE featureId = @featureId AND userId = @userId"
+			`SELECT * FROM FeatureVotes 
+			WHERE featureId = @featureId 
+			AND userId = @userId`
 		);
 	return result.recordset[0];
 };
@@ -21,7 +23,9 @@ const addVote = async (featureId, userId, vote) => {
 		.input("userId", mssql.Int, userId)
 		.input("vote", mssql.Int, vote)
 		.query(
-			"INSERT INTO FeatureVotes (featureId, userId, vote) OUTPUT INSERTED.* VALUES (@featureId, @userId, @vote)"
+			`INSERT INTO FeatureVotes (featureId, userId, vote) 
+			OUTPUT INSERTED.* 
+			VALUES (@featureId, @userId, @vote)`
 		);
 
 	return result.recordset[0];
@@ -29,10 +33,9 @@ const addVote = async (featureId, userId, vote) => {
 
 const deleteVote = async (id) => {
 	const pool = await getPool();
-	const result = await pool
-		.request()
-		.input("id", mssql.Int, id)
-		.query("DELETE FROM FeatureVotes WHERE id = @id");
+	const result = await pool.request().input("id", mssql.Int, id)
+		.query(`DELETE FROM FeatureVotes 
+			WHERE id = @id`);
 
 	return result.rowsAffected[0] === 1 ? true : false;
 };
@@ -42,8 +45,9 @@ const updateVote = async (id, vote) => {
 	const result = await pool
 		.request()
 		.input("id", mssql.Int, id)
-		.input("vote", mssql.Int, vote)
-		.query("UPDATE FeatureVotes SET vote = @vote WHERE id = @id");
+		.input("vote", mssql.Int, vote).query(`UPDATE FeatureVotes 
+			SET vote = @vote 
+			WHERE id = @id`);
 
 	return result.rowsAffected[0] === 1 ? true : false;
 };
