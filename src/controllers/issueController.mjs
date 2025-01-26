@@ -7,6 +7,8 @@ import {
 	getIssueById,
 } from "../repositories/issueRepo.mjs";
 
+const router = express.Router();
+
 router.get("/", jwtValidator, async (req, res) => {
 	try {
 		const result = await getAllIssues();
@@ -52,3 +54,5 @@ router.post(
 		}
 	}
 );
+
+export default router;
