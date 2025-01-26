@@ -9,6 +9,7 @@ const getAllIssues = async () => {
             Issues.title,
             Issues.description,
             Issues.status,
+            Issues.severity,
             Issues.createdBy,
             Users.username AS createdByName,
             Issues.createdAt,
@@ -21,8 +22,7 @@ const getAllIssues = async () => {
         LEFT JOIN 
             Users ON Issues.createdBy = Users.id
         GROUP BY 
-            Issues.id, Issues.title, Issues.description, Issues.status, 
-            Issues.createdBy, Users.username,
+            Issues.id, Issues.title, Issues.description, Issues.status, Issues.severity, Issues.createdBy, Users.username,
             Issues.createdAt, Issues.updatedAt`);
 
 	return result.recordset;
@@ -36,6 +36,7 @@ const getIssueById = async (id) => {
             Issues.title AS issueTitle,
             Issues.description AS issueDescription,
             Issues.status AS issueStatus,
+            Issue.severity AS issueSeverity,
             Issues.createdBy AS issueCreatedBy,
             Users.username AS issueCreatedByUsername,
             Issues.createdAt AS issueCreatedAt,
@@ -51,7 +52,7 @@ const getIssueById = async (id) => {
         LEFT JOIN 
             IssueComments ON Issues.id = IssueComments.issueId
         LEFT JOIN 
-            Users ON Issues.createdBy = Users.id -- Join with Users table for creator
+            Users ON Issues.createdBy = Users.id
         LEFT JOIN 
             Users AS CommentUsers ON IssueComments.createdBy = CommentUsers.id
         WHERE 
@@ -69,6 +70,7 @@ const getIssueById = async (id) => {
 		title: result.recordset[0].issueTitle,
 		description: result.recordset[0].issueDescription,
 		status: result.recordset[0].issueStatus,
+		severity: result.recordset[0].issueSeverity,
 		createdBy: {
 			id: result.recordset[0].issueCreatedBy,
 			username: result.recordset[0].issueCreatedByUsername,
