@@ -39,7 +39,11 @@ router.post(
 	jwtValidator,
 	validateIssueCreateData,
 	async (req, res) => {
+		console.log("userId: ", req.userId);
+		console.log("req.body: ", req.body);
+
 		const newIssue = req.body;
+
 		try {
 			const result = await createIssue({
 				...newIssue,
@@ -47,6 +51,8 @@ router.post(
 			});
 			res.status(201).json(result);
 		} catch (err) {
+			console.log("This one");
+
 			console.error(err);
 			res
 				.status(500)
@@ -54,5 +60,9 @@ router.post(
 		}
 	}
 );
+
+router.all("/", (req, res) => {
+	res.status(405).send({ message: `${req.method} not allowed on /issues` });
+});
 
 export default router;

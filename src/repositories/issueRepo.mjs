@@ -82,6 +82,10 @@ const createIssue = async ({
 	severity,
 	createdBy,
 }) => {
+	console.log("Entering createIssueRepo");
+	console.log("CreatedBy: ", createdBy);
+	console.log("CreatedByType: ", typeof createdBy);
+
 	const pool = await getPool();
 	const result = await pool
 		.request()
@@ -92,13 +96,14 @@ const createIssue = async ({
             INSERT INTO Issues (
                 title, 
                 description, 
-                severity
+                severity,
                 createdBy
             )
             OUTPUT INSERTED.*
             VALUES (
                 @title, 
                 @description, 
+                @severity,
                 @createdBy
             );
         `);
