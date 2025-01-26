@@ -10,6 +10,7 @@ const getAllIssues = async () => {
             Issues.description,
             Issues.status,
             Issues.createdBy,
+            Users.username AS createdByName,
             Issues.createdAt,
             Issues.updatedAt,
             COUNT(IssueComments.id) AS commentCount
@@ -17,33 +18,42 @@ const getAllIssues = async () => {
             Issues
         LEFT JOIN 
             IssueComments ON Issues.id = IssueComments.issueId
+        LEFT JOIN 
+            Users ON Issues.createdBy = Users.id
         GROUP BY 
             Issues.id, Issues.title, Issues.description, Issues.status, 
-            Issues.createdBy, Issues.createdAt, Issues.updatedAt`);
+            Issues.createdBy, Users.username,
+            Issues.createdAt, Issues.updatedAt`);
 
 	return result.recordset;
 };
 
 const getIssueById = async (id) => {
 	const pool = await getPool();
-	const result = await pool.request().input("id", mssql.Int, id).query(`
+	const result = await pool.request().input("issueId", mssql.Int, id).query(`
         SELECT 
             Issues.id AS issueId,
             Issues.title AS issueTitle,
             Issues.description AS issueDescription,
             Issues.status AS issueStatus,
             Issues.createdBy AS issueCreatedBy,
+            Users.username AS issueCreatedByUsername,
             Issues.createdAt AS issueCreatedAt,
             Issues.updatedAt AS issueUpdatedAt,
             IssueComments.id AS commentId,
             IssueComments.comment AS commentText,
             IssueComments.createdBy AS commentCreatedBy,
+            CommentUsers.username AS commentCreatedByUsername,
             IssueComments.createdAt AS commentCreatedAt,
             IssueComments.updatedAt AS commentUpdatedAt
         FROM 
             Issues
         LEFT JOIN 
             IssueComments ON Issues.id = IssueComments.issueId
+        LEFT JOIN 
+            Users ON Issues.createdBy = Users.id -- Join with Users table for creator
+        LEFT JOIN 
+            Users AS CommentUsers ON IssueComments.createdBy = CommentUsers.id
         WHERE 
             Issues.id = @issueId
         ORDER BY 
@@ -59,7 +69,10 @@ const getIssueById = async (id) => {
 		title: result.recordset[0].issueTitle,
 		description: result.recordset[0].issueDescription,
 		status: result.recordset[0].issueStatus,
-		createdBy: result.recordset[0].issueCreatedBy,
+		createdBy: {
+			id: result.recordset[0].issueCreatedBy,
+			username: result.recordset[0].issueCreatedByUsername,
+		},
 		createdAt: result.recordset[0].issueCreatedAt,
 		updatedAt: result.recordset[0].issueUpdatedAt,
 		comments: result.recordset
@@ -67,7 +80,10 @@ const getIssueById = async (id) => {
 			.map((row) => ({
 				commentId: row.commentId,
 				text: row.commentText,
-				createdBy: row.commentCreatedBy,
+				createdBy: {
+					id: row.commentCreatedBy,
+					username: row.commentCreatedByUsername,
+				},
 				createdAt: row.commentCreatedAt,
 				updatedAt: row.commentUpdatedAt,
 			})),
@@ -82,10 +98,6 @@ const createIssue = async ({
 	severity,
 	createdBy,
 }) => {
-	console.log("Entering createIssueRepo");
-	console.log("CreatedBy: ", createdBy);
-	console.log("CreatedByType: ", typeof createdBy);
-
 	const pool = await getPool();
 	const result = await pool
 		.request()
