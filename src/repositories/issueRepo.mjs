@@ -76,16 +76,23 @@ const getIssueById = async (id) => {
 	return issue;
 };
 
-const createIssue = async ({ title, description = null, createdBy }) => {
+const createIssue = async ({
+	title,
+	description = null,
+	severity,
+	createdBy,
+}) => {
 	const pool = await getPool();
 	const result = await pool
 		.request()
 		.input("title", mssql.NVarChar(255), title)
 		.input("description", mssql.NVarChar(1000), description)
+		.input("severity", mssql.NVarChar(50), severity)
 		.input("createdBy", mssql.Int, createdBy).query(`
             INSERT INTO Issues (
                 title, 
                 description, 
+                severity
                 createdBy
             )
             OUTPUT INSERTED.*
